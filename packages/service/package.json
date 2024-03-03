@@ -1,0 +1,38 @@
+{
+  "name": "@salve-chall/service",
+  "version": "0.0.1",
+  "description": "GraphQL service layer for the code challenge",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "watch": "nodemon"
+  },
+  "dependencies": {
+    "@anatine/esbuild-decorators": "^0.2.19",
+    "@fastify/aws-lambda": "^3.3.0",
+    "aws-jwt-verify": "^4.0.0",
+    "class-validator": "^0.14.0",
+    "fastify": "^4.21.0",
+    "graphql": "^16.8.1",
+    "graphql-scalars": "^1.22.4",
+    "http-errors": "^2.0.0",
+    "mercurius": "^13.1.0",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^2.0.0-beta.3",
+    "typedi": "^0.10.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@salve-chall/dev": "0.0.1",
+    "@types/aws-lambda": "^8.10.119",
+    "esbuild": "^0.18.17",
+    "esbuild-decorators": "^1.0.0",
+    "esbuild-plugin-tsc": "^0.4.0",
+    "node-fetch": "2.6.6",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

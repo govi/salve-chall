@@ -1,0 +1,12 @@
+{
+  "name": "@salve-chall/sql4csv",
+  "version": "0.0.1",
+  "description": "Just a basic CSV client that fakes SQL access to work with Prisma",
+  "main": "index.ts",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "csv-parse": "^5.5.5",
+    "csv-parser": "^3.0.0",
+    "node-sql-parser": "^4.18.0"
+  }
+}
