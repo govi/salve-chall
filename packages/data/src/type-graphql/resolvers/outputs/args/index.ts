@@ -1,0 +1,1 @@
+export { ClinicCountPatientArgs } from "./ClinicCountPatientArgs";

@@ -1,7 +1,7 @@
 {
   "name": "@salve-chall/data",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "UNLICENSED",
   "description": "Holds all the Prisma generated models",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.7.0",
+    "@salve-chall/prisma-csv-driver": "0.0.1",
     "class-validator": "^0.14.0",
     "graphql": "^16.8.1",
     "graphql-fields": "^2.0.3",

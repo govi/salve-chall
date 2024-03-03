@@ -4,6 +4,7 @@ import type {
   Queryable,
   Result,
   ResultSet,
+  Transaction,
 } from "@prisma/driver-adapter-utils"
 import { ColumnTypeEnum, Debug, err, ok } from "@prisma/driver-adapter-utils"
 import {
@@ -17,7 +18,7 @@ const log = Debug("prisma:driver-adapter:csv")
 const fieldTypeToColumnType = (fType: SupportedFieldTypes) => {
   if (fType === "Int") {
     return ColumnTypeEnum.Int32
-  } else if (fType === "string") {
+  } else if (fType === "String") {
     return ColumnTypeEnum.Text
   } else if (fType === "DateTime") {
     return ColumnTypeEnum.DateTime
@@ -27,17 +28,13 @@ const fieldTypeToColumnType = (fType: SupportedFieldTypes) => {
   throw new Error(`Unsupported field type ${fType}`)
 }
 
-/**
- * Base class for http client, ws client and ws transaction
- */
-class CSVQueryable implements Queryable {
+class PrismaCSV implements Queryable {
   readonly provider = "mysql"
 
   constructor(protected client: CSVClient) {}
 
   async queryRaw(query: Query): Promise<Result<ResultSet>> {
     log(`[js::query_raw] %O`, query)
-
     const res = await this.performIO(query)
 
     if (!res.ok) {
@@ -52,12 +49,11 @@ class CSVQueryable implements Queryable {
     return ok({
       columnNames: fieldNames,
       columnTypes,
-      rows,
+      rows: rows.map(z => fieldNames.map(f => z[f])),
     })
   }
 
   async executeRaw(query: Query): Promise<Result<number>> {
-    const tag = "[js::execute_raw]"
     log(`[js::execute_raw] %O`, query)
 
     return (await this.performIO(query)).map(r => r.count ?? 0)
@@ -82,4 +78,10 @@ class CSVQueryable implements Queryable {
       throw e
     }
   }
+
+  startTransaction(): Promise<Result<Transaction>> {
+    return Promise.reject(new Error("Transactions are not supported"))
+  }
 }
+
+export default PrismaCSV

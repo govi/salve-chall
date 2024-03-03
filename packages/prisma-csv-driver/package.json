@@ -2,7 +2,7 @@
   "name": "@salve-chall/prisma-csv-driver",
   "version": "0.0.1",
   "description": "CSV driver for Prisma",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "UNLICENSED",
   "dependencies": {
     "@prisma/driver-adapter-utils": "^5.10.2",

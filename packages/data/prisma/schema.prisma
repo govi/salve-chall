@@ -12,12 +12,12 @@ generator typegraphql {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model Clinic {
-  id      Int       @id @default(autoincrement())
+  id      String       @id
   name    String
   Patient Patient[]
 
@@ -25,12 +25,12 @@ model Clinic {
 }
 
 model Patient {
-  id          Int      @id @default(autoincrement())
+  id          String      @id 
   firstName   String   @map("first_name")
   lastName    String   @map("last_name")
   dateOfBirth DateTime @map("date_of_birth")
   clinic      Clinic   @relation(fields: [clinicId], references: [id])
-  clinicId    Int      @map("clinic_id")
+  clinicId    String      @map("clinic_id")
 
   @@map("patients")
 }
