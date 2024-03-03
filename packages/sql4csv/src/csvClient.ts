@@ -35,7 +35,7 @@ const searchForParameterisedField = (
 ) => {
   const l = ex.left
   const r = ex.right
-  if (l.type === "column_ref" && r.type === "origin" && r.value === "?") {
+  if (l?.type === "column_ref" && r?.type === "origin" && r.value === "?") {
     return [(l as ColumnRef).column, params[index]]
   }
 }
@@ -120,6 +120,7 @@ class CSVClient {
       let counter = 0
       return [w.left as Expr, w.right as Expr]
         .map(z => {
+          if (!z) return
           const info = searchForParameterisedField(z, params, counter)
           if (info) {
             counter++
