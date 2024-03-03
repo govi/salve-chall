@@ -1,0 +1,15 @@
+{
+  "name": "salve-chall",
+  "version": "0.0.1",
+  "description": "Monorepo parent package for Salve Code Challenge",
+  "main": "index.js",
+  "private": true,
+  "author": "Govi Ramanujam <govi@email.com>",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "7.0.2"
+  }
+}
