@@ -1,6 +1,14 @@
 import { parse } from "csv-parse/sync"
 import { promises as fs } from "fs"
-import { AST, Column, ColumnRef, Expr, Parser, Select } from "node-sql-parser"
+import {
+  AST,
+  Column,
+  ColumnRef,
+  Expr,
+  OrderBy,
+  Parser,
+  Select,
+} from "node-sql-parser"
 
 export interface CSVClientOptions {
   tenantType: string
@@ -51,6 +59,10 @@ const checkASTValid = (ast: AST) => {
   return true
 }
 
+const getSortOrder = (ast: AST) => {
+  if ((ast as Select).orderby) return (ast as Select).orderby?.[0]
+}
+
 const parser = new Parser()
 class CSVClient {
   private readonly _options: CSVClientOptions
@@ -69,7 +81,8 @@ class CSVClient {
   async query<T>(
     table: string,
     fields?: string[],
-    filters?: Record<string, any>
+    filters?: Record<string, any>,
+    sortOrder?: OrderBy
   ): Promise<{
     items: T[]
     fields?: { name: string; type: SupportedFieldTypes }[]
@@ -86,7 +99,7 @@ class CSVClient {
       string,
       { name: string; type: SupportedFieldTypes }
     > = {}
-    const respItems = items.map((item: string[]) => {
+    let respItems = items.map((item: string[]) => {
       return headers.reduce((acc, field, index) => {
         if (fields && fields.length > 0 && !fields.includes(field)) return acc
         acc[field] = item[index]
@@ -101,7 +114,15 @@ class CSVClient {
     })
 
     const respFields = fields?.map(z => fieldInfo[z])
-
+    if (sortOrder) {
+      const sortField = sortOrder.expr.column
+      const sortDirection = sortOrder.type
+      respItems = respItems.sort((a: any, b: any) => {
+        if (a[sortField] < b[sortField]) return sortDirection === "ASC" ? -1 : 1
+        if (a[sortField] > b[sortField]) return sortDirection === "ASC" ? 1 : -1
+        return 0
+      })
+    }
     return {
       items: respItems,
       fields: respFields,
@@ -118,7 +139,12 @@ class CSVClient {
     if (typeof where === "object") {
       const w = where as Expr
       let counter = 0
-      return [w.left as Expr, w.right as Expr]
+      // for one param or two params only
+      return (
+        (where as Expr)?.operator === "="
+          ? [where as Expr]
+          : [w.left as Expr, w.right as Expr]
+      )
         .map(z => {
           if (!z) return
           const info = searchForParameterisedField(z, params, counter)
@@ -142,9 +168,14 @@ class CSVClient {
     })
     const table = (result as Select).from?.[0].table
     const tenantId = this.findTenantId(result as Select, params ?? [])
-    const r = await this.query(table, fields, {
-      [this._options.tenantIdFieldName]: tenantId,
-    })
+    const r = await this.query(
+      table,
+      fields,
+      {
+        [this._options.tenantIdFieldName]: tenantId,
+      },
+      getSortOrder(result)
+    )
     return {
       fieldNames: r.fields?.map(z => z.name) ?? [],
       fieldTypes: r.fields?.map(z => z.type) ?? [],

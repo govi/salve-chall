@@ -1,6 +1,7 @@
 import "reflect-metadata"
 
 import fastify, { FastifyInstance } from "fastify"
+
 import mercurius from "mercurius"
 import buildContext from "./buildContext"
 import formatErrors from "./formatErrors"
